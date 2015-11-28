@@ -16,7 +16,6 @@ public class ZombieMainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(new GraphicsView(this));
-//        getResources().getDrawable(R.drawable.left,getTheme());
     }
 
     @Override

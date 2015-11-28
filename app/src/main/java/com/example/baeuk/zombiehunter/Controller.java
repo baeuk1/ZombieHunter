@@ -1,15 +1,15 @@
 package com.example.baeuk.zombiehunter;
 
+import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-
-import static com.example.baeuk.zombiehunter.R.drawable.left;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.MotionEvent;
 
 /**
  * Created by baeuk on 2015-11-04.
@@ -17,33 +17,56 @@ import static com.example.baeuk.zombiehunter.R.drawable.left;
 public class Controller {
     private Paint paint_LR;
     private Paint paint_shot;
-    private Rect leftbutton;
-    private Rect rightbutton;
     private Rect shotbutton;
     private Drawable left;
-    private Drawable rightbtn;
+    private Drawable right;
     private final int BTTOP = 900;
     private final int BTBOTTOM = BTTOP + 100;
+    private final int BTLEFTSTART = 90;
+    private final int BTLEFTEND = BTLEFTSTART + 100;
+    private final int BTMIDDLESTART = BTLEFTEND + 50;
+    private final int BTMIDDLEEND = BTMIDDLESTART + 240;
+    private final int BTRIGHTSTART = BTMIDDLEEND + 50;
+    private final int BTRIGHTEND = BTRIGHTSTART + 100;
+    private final int BT_MOVE_LEFT = 1;
+    private final int BT_SHOOT = 2;
+    private final int BT_MOVE_RIGHT = 3;
 
-    public Controller(){
+    public Controller(Context context){
         paint_LR = new Paint();
         paint_shot = new Paint();
-        leftbutton = new Rect();
         shotbutton = new Rect();
-        rightbutton = new Rect();
+        left = ContextCompat.getDrawable(context,R.drawable.left);
+        right = ContextCompat.getDrawable(context,R.drawable.right);
 
         paint_LR.setColor(Color.RED);
         paint_LR.setTextSize(70);
         paint_shot.setColor(Color.BLUE);
-        leftbutton.set(90,BTTOP,190,BTBOTTOM);
-        shotbutton.set(240,BTTOP,480,BTBOTTOM);
-        rightbutton.set(530,BTTOP,630,BTBOTTOM);
+
+        left.setBounds(BTLEFTSTART, BTTOP, BTLEFTEND, BTBOTTOM);
+        shotbutton.set(BTMIDDLESTART, BTTOP, BTMIDDLEEND, BTBOTTOM);
+        right.setBounds(BTRIGHTSTART,BTTOP,BTRIGHTEND,BTBOTTOM);
     }
 
     public void draw(Canvas canvas){
-        canvas.drawRect(leftbutton,paint_LR);
-        canvas.drawRect(shotbutton,paint_shot);
-        canvas.drawRect(rightbutton,paint_LR);
+        left.draw(canvas);
+        right.draw(canvas);
+        canvas.drawRect(shotbutton, paint_shot);
         canvas.drawText("SHOT", 290, 970, paint_LR);
+    }
+    public int onTouchEvent(MotionEvent event){
+        float currentX = event.getX();
+        float currentY = event.getY();
+
+        if(currentX>=BTLEFTSTART && currentX<=BTLEFTEND && currentY>=BTTOP && currentY<=BTBOTTOM){
+            return BT_MOVE_LEFT;
+        }
+        else if(currentX>=BTMIDDLESTART && currentX<=BTMIDDLEEND && currentY>=BTTOP && currentY<=BTBOTTOM){
+            return BT_SHOOT;
+        }
+        else if(currentX>=BTRIGHTSTART && currentX<=BTRIGHTEND && currentY>=BTTOP && currentY<=BTBOTTOM){
+            return BT_MOVE_RIGHT;
+        }
+        else return 0;
     }
 }
