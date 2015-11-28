@@ -2,7 +2,6 @@ package com.example.baeuk.zombiehunter;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 
@@ -10,7 +9,6 @@ import android.support.v4.content.ContextCompat;
  * Created by baeuk on 2015-11-04.
  */
 public class Shotgun {
-    private Paint gunPaint;
     private Drawable shotgun;
     private final int GUNTOP = 790;
     private final int GUNBOTTOM = GUNTOP + 100;
@@ -23,6 +21,7 @@ public class Shotgun {
     private final int GUN_STATE_LEFT = 1;
     private final int GUN_STATE_CENTER = 2;
     private final int GUN_STATE_RIGHT = 3;
+    private int state;
 
     private int gunState;
 
@@ -34,34 +33,36 @@ public class Shotgun {
     public void draw(Canvas canvas){
         shotgun.draw(canvas);
     }
-    public void execute(int command){
+    public int execute(int command){
+        state = 0;
         switch(command){
             case 1: {
-                if(gunState == 1);
-                else if(gunState == 2){
+                if(gunState == GUN_STATE_LEFT);
+                else if(gunState == GUN_STATE_CENTER){
                     shotgun.setBounds(GUNLEFTSTART,GUNTOP,GUNLEFTEND,GUNBOTTOM);
-                    gunState = 1;
+                    gunState = GUN_STATE_LEFT;
                 }
-                else if(gunState == 3){
+                else if(gunState == GUN_STATE_RIGHT){
                     shotgun.setBounds(GUNMIDDLESTART,GUNTOP,GUNMIDDLEEND,GUNBOTTOM);
-                    gunState = 2;
+                    gunState = GUN_STATE_CENTER;
                 }
             } break;
             case 2: {
-
+                state = gunState;
             } break;
             case 3: {
-                if(gunState == 1){
+                if(gunState == GUN_STATE_LEFT){
                     shotgun.setBounds(GUNMIDDLESTART,GUNTOP,GUNMIDDLEEND,GUNBOTTOM);
-                    gunState = 2;
+                    gunState = GUN_STATE_CENTER;
                 }
-                else if(gunState == 2){
+                else if(gunState == GUN_STATE_CENTER){
                     shotgun.setBounds(GUNRIGHTSTART,GUNTOP,GUNRIGHTEND,GUNBOTTOM);
-                    gunState = 3;
+                    gunState = GUN_STATE_RIGHT;
                 }
-                else if(gunState == 3);
+                else if(gunState == GUN_STATE_RIGHT);
             } break;
             default: break;
         }
+        return state;
     }
 }
