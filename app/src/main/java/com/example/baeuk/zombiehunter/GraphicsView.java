@@ -4,15 +4,16 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.text.method.Touch;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 /**
  * Created by baeuk on 2015-11-04.
  */
 public class GraphicsView extends View {
+    Context context;
     Shotgun shotgun;
     Controller controller;
     Zombie zombie[];
@@ -26,9 +27,10 @@ public class GraphicsView extends View {
     private int currentNumOfZombies = 0;
     private boolean zombieCreate = true;
     private boolean gameOverFlag = false;
-    private final int ZENSPEED = 500; //lower is faster.
-    private final int ZENTERM = 300;
-    private final int MAXZOMBIES = 100;
+    private boolean gameClearFlag = false;
+    private final int ZENSPEED = 200; //lower is faster.
+    private final int ZENTERM = 400;
+    private final int MAXZOMBIES = 30;
     private final int MOVE_LEFT = 1;
     private final int SHOOT = 2;
     private final int MOVE_RIGHT = 3;
@@ -49,7 +51,7 @@ public class GraphicsView extends View {
                     zombieLane[currentNumOfZombies] = zombie[currentNumOfZombies].getPosition();
                     currentNumOfZombies++;
                     try {
-                        Thread.sleep((int)Math.random()*ZENTERM+ZENSPEED);
+                        Thread.sleep((int)(Math.random() * ZENTERM) + ZENSPEED);
                     } catch (InterruptedException e) {
                         continue;
                     }
@@ -62,6 +64,7 @@ public class GraphicsView extends View {
 
     public GraphicsView(Context context){
         super(context);
+        this.context=context;
         zombieLane = new int[MAXZOMBIES];
         zombie = new Zombie[MAXZOMBIES];
         zombieMakeThread = new ZombieMakeThread(context);
@@ -91,9 +94,25 @@ public class GraphicsView extends View {
             if(zombie[i]!=null) zombie[i].draw(canvas); // To draw every existing zombies
         }
         if(checkGameOver()==true) gameOver();
+        if(checkGameClear()==true) gameClear();
         drawLine(canvas);
         canvas.drawText(numofKills,260,1040,white);
         invalidate();
+    }
+
+    private boolean checkGameClear(){
+        if(currentNumOfZombies == MAXZOMBIES) {
+            for (int i = 0; i < MAXZOMBIES; i++) {
+                if (zombie[i] != null) return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private void gameClear(){
+        if(gameClearFlag == false) Toast.makeText(context,"GAME CLEAR!!",Toast.LENGTH_SHORT).show();
+        gameClearFlag = true;
     }
 
     private boolean checkGameOver(){
@@ -111,6 +130,7 @@ public class GraphicsView extends View {
         if(zombieCreate == false) {
             for (int i = 0; i < currentNumOfZombies; i++)
                 if (zombie[i] != null) zombie[i].downSignal = false;
+            if(gameOverFlag == false) Toast.makeText(context, "GAME OVER", Toast.LENGTH_SHORT).show();
             gameOverFlag = true;
         }
     }

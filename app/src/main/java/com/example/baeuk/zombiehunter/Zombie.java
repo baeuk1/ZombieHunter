@@ -19,7 +19,8 @@ public class Zombie {
     private int init_right;
     private int currentTop;
     private int currentBottom;
-    private int downSpeed = 5;
+    private int downSpeed = 3;
+    private int randomDownSpeed;
     public boolean downSignal = true;
 
     public Zombie(Context context){
@@ -43,8 +44,9 @@ public class Zombie {
     }
     private void moveDown(Drawable zombie){
         if(downSignal == true) {
-            currentTop += downSpeed;
-            currentBottom += downSpeed;
+            randomDownSpeed = (int) Math.random()*3;
+            currentTop += downSpeed + randomDownSpeed;
+            currentBottom += downSpeed + randomDownSpeed;
             zombie.setBounds(init_left, INIT_TOP + currentTop, init_right, INIT_BOTTOM + currentBottom);
         }
     }
