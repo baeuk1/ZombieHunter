@@ -6,10 +6,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class ZombieMainActivity extends Activity {
+    GraphicsView zombieGame;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(new GraphicsView(this));
+        zombieGame = new GraphicsView(this);
+        setContentView(zombieGame);
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        zombieGame.createSoundPool();
     }
 
     @Override
