@@ -1,24 +1,36 @@
 package com.example.baeuk.zombiehunter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 public class ZombieMainActivity extends Activity {
-    GraphicsView zombieGame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        zombieGame = new GraphicsView(this);
-        setContentView(zombieGame);
-    }
+        setContentView(R.layout.activity_zombie_main);
 
-    @Override
-    protected void onPause(){
-        super.onPause();
-        zombieGame.createSoundPool();
+        final Intent level1 = new Intent(ZombieMainActivity.this, LV1Activity.class);
+        Button btn1 = (Button)findViewById(R.id.button);
+        Button btn2 = (Button)findViewById(R.id.button2);
+
+        btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(level1);
+            }
+        });
+        btn2.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+
+            }
+        });
     }
 
     @Override
