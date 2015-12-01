@@ -22,6 +22,7 @@ public class GraphicsView extends View {
     private Shotgun shotgun;
     private Controller controller;
     private Zombie zombie[];
+    private Katpa katpa[];
     private Paint white;
     private Paint deadline;
     private Paint laneline;
@@ -34,31 +35,40 @@ public class GraphicsView extends View {
     private float linewidth;
     private float lineheight;
     private String numofKills;
+    private int level;
     private int kills;
     private int currentNumOfZombies = 0;
+    private int maxZombies;
     private boolean zombieCreate = true;
     private boolean gameOverFlag = false;
     private boolean gameClearFlag = false;
     private final int ZENSPEED = 200; //lower is faster.
     private final int ZENTERM = 400;
-    private final int MAXZOMBIES = 30;
     private final int MOVE_LEFT = 1;
     private final int SHOOT = 2;
     private final int MOVE_RIGHT = 3;
     private final int DEADLINE = 730;
     private long previousTime = 0;
     private int[] zombieLane;
+    private int[] numberofZombiesbyLevel = { 30, 50, 60 };
 
     class ZombieMakeThread extends Thread{
         Context context;
-        public ZombieMakeThread(Context context){
+        int level;
+        public ZombieMakeThread(Context context, int level){
             this.context = context;
+            this.level = level;
         }
         @Override
         public void run(){
-            while(currentNumOfZombies < MAXZOMBIES){
+            while(currentNumOfZombies < maxZombies){
                 if(zombieCreate == true){
-                    zombie[currentNumOfZombies] = new Zombie(context);
+                    switch (level){
+                        case 1 : zombie[currentNumOfZombies] = new Zombie(context); break;
+                        case 2 : zombie[currentNumOfZombies] = new Katpa(context); break;
+                        case 3 : zombie[currentNumOfZombies] = new Issha(context); break;
+                        default : break;
+                    }
                     zombieLane[currentNumOfZombies] = zombie[currentNumOfZombies].getPosition();
                     currentNumOfZombies++;
                     try {
@@ -71,19 +81,21 @@ public class GraphicsView extends View {
         }
     }
 
-    public GraphicsView(Context context){
+    public GraphicsView(Context context, int level){
         super(context);
         this.context=context;
         createSoundPool();
-        zombieLane = new int[MAXZOMBIES];
-        zombie = new Zombie[MAXZOMBIES];
-        zombieMakeThread = new ZombieMakeThread(context);
+        maxZombies = numberofZombiesbyLevel[level-1];
+        zombieLane = new int[maxZombies];
+        zombie = new Zombie[maxZombies];
+        katpa = new Katpa[maxZombies];
+        zombieMakeThread = new ZombieMakeThread(context, level);
         controller = new Controller(context);
         shotgun = new Shotgun(context);
         white = new Paint();
         deadline = new Paint();
         laneline = new Paint();
-
+        this.level = level-1;
         white.setColor(Color.WHITE);
         deadline.setColor(Color.RED);
         laneline.setColor(Color.DKGRAY);
@@ -91,7 +103,7 @@ public class GraphicsView extends View {
         numofKills = "Kills : 0";
         kills = 0;
 
-        for(int i=0; i<MAXZOMBIES; i++) zombieLane[i]=0;
+        for(int i=0; i<maxZombies; i++) zombieLane[i]=0;
         zombieMakeThread.start();
     }
 
@@ -119,7 +131,7 @@ public class GraphicsView extends View {
     public boolean onTouchEvent(MotionEvent event){
         int shotPosition;
          Log.v("time",Long.toString(event.getEventTime()-previousTime)); // for Debug
-        if(gameOverFlag == false && event.getEventTime()-previousTime > 130){
+        if(gameOverFlag == false && event.getEventTime()-previousTime > 120){
             switch(controller.onTouchEvent(event)){
                 case 1:{
                     previousTime = event.getEventTime();
@@ -131,9 +143,12 @@ public class GraphicsView extends View {
                     shotPosition = shotgun.execute(SHOOT);
                     for(int i=0; i<currentNumOfZombies; i++){
                         if(zombieLane[i]==shotPosition){
-                            zombie[i]=null;
-                            zombieLane[i]=0;
-                            numofKills = "Kills : " + ++kills;
+                            if(zombie[i].getLife(level) == 1) {
+                                zombie[i]=null;
+                                zombieLane[i]=0;
+                                numofKills = "Kills : " + ++kills;
+                            }
+                            else zombie[i].decreaseLife(level);
                             break;
                         }
                     }
@@ -166,8 +181,8 @@ public class GraphicsView extends View {
     }
 
     private boolean checkGameClear(){
-        if(currentNumOfZombies == MAXZOMBIES) {
-            for (int i = 0; i < MAXZOMBIES; i++) {
+        if(currentNumOfZombies == maxZombies) {
+            for (int i = 0; i < maxZombies; i++) {
                 if (zombie[i] != null) return false;
             }
             return true;

@@ -16,8 +16,11 @@ public class ZombieMainActivity extends Activity {
         setContentView(R.layout.activity_zombie_main);
 
         final Intent level1 = new Intent(ZombieMainActivity.this, LV1Activity.class);
+        final Intent level2 = new Intent(ZombieMainActivity.this, LV2Activity.class);
+        final Intent level3 = new Intent(ZombieMainActivity.this, LV3Activity.class);
         Button btn1 = (Button)findViewById(R.id.button);
         Button btn2 = (Button)findViewById(R.id.button2);
+        Button btn3 = (Button)findViewById(R.id.button3);
 
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -28,7 +31,13 @@ public class ZombieMainActivity extends Activity {
         btn2.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-
+                startActivity(level2);
+            }
+        });
+        btn3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                startActivity(level3);
             }
         });
     }

@@ -4,11 +4,11 @@ import android.app.Activity;
 import android.os.Bundle;
 
 /**
- * Created by baeuk on 2015-11-30.
+ * Created by baeuk on 2015-12-01.
  */
-public class LV1Activity extends Activity {
+public class LV3Activity extends Activity {
     GraphicsView zombieGame;
-    private final int level = 1;
+    private final int level = 3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

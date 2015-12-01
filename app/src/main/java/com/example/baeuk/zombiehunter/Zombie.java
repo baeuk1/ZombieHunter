@@ -9,17 +9,18 @@ import android.support.v4.content.ContextCompat;
  * Created by baeuk on 2015-11-04.
  */
 public class Zombie {
-    private Drawable zombie;
+    protected Drawable zombie;
     private int randPosition;
-    private final int LANE_NUM = 3;
-    private final int LANE_GAP = 220;
+    protected int LANE_NUM = 3;
+    protected int LANE_GAP = 220;
     private final int INIT_TOP = 0;
     private final int INIT_BOTTOM = 80;
     private int init_left;
     private int init_right;
     private int currentTop;
     private int currentBottom;
-    private int downSpeed = 3;
+    private int life[] = { 1, 1, 2 };
+    protected int downSpeed = 3;
     private int randomDownSpeed;
     public boolean downSignal = true;
 
@@ -36,12 +37,12 @@ public class Zombie {
         moveDown(zombie);
         zombie.draw(canvas);
     }
-    public int getPosition(){
-        return randPosition;
-    }
+    public int getPosition(){ return randPosition; }
     public int getBottomCoordinate(){
         return currentBottom;
     }
+    public int getLife(int level){ return life[level]; }
+    public void decreaseLife(int level){ life[level]--; }
     private void moveDown(Drawable zombie){
         if(downSignal == true) {
             randomDownSpeed = (int) Math.random()*3;

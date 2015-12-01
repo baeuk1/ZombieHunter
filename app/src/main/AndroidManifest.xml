@@ -23,6 +23,16 @@
             android:label="Level 1"
             android:theme="@android:style/Theme.Holo">
         </activity>
+        <activity
+            android:name=".LV2Activity"
+            android:label="Level 2"
+            android:theme="@android:style/Theme.Holo">
+        </activity>
+        <activity
+            android:name=".LV3Activity"
+            android:label="Level 3"
+            android:theme="@android:style/Theme.Holo">
+        </activity>
     </application>
 
 </manifest>

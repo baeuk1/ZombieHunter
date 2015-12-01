@@ -24,7 +24,7 @@
         android:layout_centerHorizontal="true" />
 
     <ImageView
-        android:padding="20dp"
+        android:padding="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
@@ -35,26 +35,36 @@
         android:longClickable="false" />
 
     <Button
-        android:padding="20dp"
         android:layout_width="120dp"
-        android:layout_height="70dp"
+        android:layout_height="50dp"
         android:text="Level 1"
         android:id="@+id/button"
         android:textColorHighlight="@color/accent_material_dark"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:textSize="20dp"
+        android:textSize="16dp"
         android:textStyle="bold" />
 
     <Button
         android:layout_width="120dp"
-        android:layout_height="70dp"
+        android:layout_height="50dp"
         android:text="Level 2"
         android:id="@+id/button2"
         android:textColorHighlight="@color/accent_material_dark"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:textSize="20dp"
+        android:textSize="16dp"
+        android:textStyle="bold" />
+
+    <Button
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:text="Level 3"
+        android:id="@+id/button3"
+        android:textColorHighlight="@color/accent_material_dark"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="16dp"
         android:textStyle="bold" />
 
 </LinearLayout>
