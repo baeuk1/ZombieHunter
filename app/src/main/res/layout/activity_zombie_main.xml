@@ -17,26 +17,24 @@
         android:id="@+id/textView"
         android:textColor="#ff2000"
         android:textIsSelectable="false"
-        android:textSize="40sp"
-        android:layout_marginTop="15dp"
+        android:textSize="50dp"
+        android:layout_marginTop="10dp"
         android:textAppearance="@android:color/holo_red_dark"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
     <ImageView
-        android:padding="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
         android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"
-        android:src="@drawable/zombieoriginal"
+        android:src="@drawable/blood"
         android:longClickable="false" />
 
     <Button
         android:layout_width="120dp"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:text="Level 1"
         android:id="@+id/button"
         android:textColorHighlight="@color/accent_material_dark"
@@ -47,7 +45,7 @@
 
     <Button
         android:layout_width="120dp"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:text="Level 2"
         android:id="@+id/button2"
         android:textColorHighlight="@color/accent_material_dark"
@@ -58,9 +56,20 @@
 
     <Button
         android:layout_width="120dp"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:text="Level 3"
         android:id="@+id/button3"
+        android:textColorHighlight="@color/accent_material_dark"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="16dp"
+        android:textStyle="bold" />
+
+    <Button
+        android:layout_width="120dp"
+        android:layout_height="45dp"
+        android:text="Level 4"
+        android:id="@+id/button4"
         android:textColorHighlight="@color/accent_material_dark"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"

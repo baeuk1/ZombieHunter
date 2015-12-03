@@ -8,7 +8,6 @@ import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,7 +21,6 @@ public class GraphicsView extends View {
     private Shotgun shotgun;
     private Controller controller;
     private Zombie zombie[];
-    private Katpa katpa[];
     private Paint white;
     private Paint deadline;
     private Paint laneline;
@@ -47,10 +45,10 @@ public class GraphicsView extends View {
     private final int MOVE_LEFT = 1;
     private final int SHOOT = 2;
     private final int MOVE_RIGHT = 3;
-    private final int DEADLINE = 730;
+    private final double DEADLINE = 730.0;
     private long previousTime = 0;
     private int[] zombieLane;
-    private int[] numberofZombiesbyLevel = { 30, 50, 60 };
+    private int[] numberofZombiesbyLevel = { 40, 50, 60, 70 };
 
     class ZombieMakeThread extends Thread{
         Context context;
@@ -58,6 +56,21 @@ public class GraphicsView extends View {
         public ZombieMakeThread(Context context, int level){
             this.context = context;
             this.level = level;
+        }
+        private void createZombiesByRandom(){
+            switch((int)(Math.random()*10)){
+                case 0 : zombie[currentNumOfZombies] = new Zombie(context,4); break;
+                case 1 : zombie[currentNumOfZombies] = new Zombie(context,4); break;
+                case 2 : zombie[currentNumOfZombies] = new Zombie(context,4); break;
+                case 3 : zombie[currentNumOfZombies] = new Zombie(context,4); break;
+                case 4 : zombie[currentNumOfZombies] = new Katpa(context,4); break;
+                case 5 : zombie[currentNumOfZombies] = new Katpa(context,4); break;
+                case 6 : zombie[currentNumOfZombies] = new Katpa(context,4); break;
+                case 7 : zombie[currentNumOfZombies] = new Issha(context,4); break;
+                case 8 : zombie[currentNumOfZombies] = new Issha(context,4); break;
+                case 9 : zombie[currentNumOfZombies] = new Person(context); break;
+                default: break;
+            }
         }
         @Override
         public void run(){
@@ -67,6 +80,7 @@ public class GraphicsView extends View {
                         case 1 : zombie[currentNumOfZombies] = new Zombie(context); break;
                         case 2 : zombie[currentNumOfZombies] = new Katpa(context); break;
                         case 3 : zombie[currentNumOfZombies] = new Issha(context); break;
+                        case 4 : createZombiesByRandom(); break;
                         default : break;
                     }
                     zombieLane[currentNumOfZombies] = zombie[currentNumOfZombies].getPosition();
@@ -85,22 +99,22 @@ public class GraphicsView extends View {
         super(context);
         this.context=context;
         createSoundPool();
-        maxZombies = numberofZombiesbyLevel[level-1];
+        this.level = level-1;
+        maxZombies = numberofZombiesbyLevel[this.level];
         zombieLane = new int[maxZombies];
         zombie = new Zombie[maxZombies];
-        katpa = new Katpa[maxZombies];
         zombieMakeThread = new ZombieMakeThread(context, level);
         controller = new Controller(context);
         shotgun = new Shotgun(context);
         white = new Paint();
         deadline = new Paint();
         laneline = new Paint();
-        this.level = level-1;
+
         white.setColor(Color.WHITE);
         deadline.setColor(Color.RED);
         laneline.setColor(Color.DKGRAY);
         white.setTextSize(40);
-        numofKills = "Kills : 0";
+        numofKills = "Kills : 0/" + numberofZombiesbyLevel[this.level];
         kills = 0;
 
         for(int i=0; i<maxZombies; i++) zombieLane[i]=0;
@@ -114,7 +128,7 @@ public class GraphicsView extends View {
         for(int i=0; i<currentNumOfZombies; i++){
             if(zombie[i]!=null) zombie[i].draw(canvas); // To draw every existing zombies
         }
-        if(checkGameOver()==true) gameOver();
+        if(checkLineOver()==true) gameOver();
         if(checkGameClear()==true) gameClear();
         drawLine(canvas);
         canvas.drawText(numofKills,260,1040,white);
@@ -143,12 +157,13 @@ public class GraphicsView extends View {
                     shotPosition = shotgun.execute(SHOOT);
                     for(int i=0; i<currentNumOfZombies; i++){
                         if(zombieLane[i]==shotPosition){
-                            if(zombie[i].getLife(level) == 1) {
+                            if(zombie[i].isPerson()) gameOver();
+                            else if(zombie[i].getLife() == 1) {
                                 zombie[i]=null;
                                 zombieLane[i]=0;
-                                numofKills = "Kills : " + ++kills;
+                                numofKills = "Kills : " + ++kills + "/" + numberofZombiesbyLevel[level];
                             }
-                            else zombie[i].decreaseLife(level);
+                            else zombie[i].decreaseLife();
                             break;
                         }
                     }
@@ -195,11 +210,15 @@ public class GraphicsView extends View {
         gameClearFlag = true;
     }
 
-    private boolean checkGameOver(){
+    private boolean checkLineOver(){
         for(int i=0; i<currentNumOfZombies; i++) {
             if (zombie[i] != null && zombie[i].getBottomCoordinate() >= DEADLINE) {
-                zombieCreate = false;
-                return true;
+                if(zombie[i].isPerson()){
+                    zombie[i] = null;
+                    zombieLane[i]=0;
+                    return false;
+                }
+                else return true;
             }
         }
         return false;
@@ -207,12 +226,11 @@ public class GraphicsView extends View {
 
     private void gameOver(){
         // When zombie couldn't be created because someone passes the deadline, Everyone stops.
-        if(zombieCreate == false) {
-            for (int i = 0; i < currentNumOfZombies; i++)
-                if (zombie[i] != null) zombie[i].downSignal = false;
-            if(gameOverFlag == false) Toast.makeText(context, "GAME OVER", Toast.LENGTH_SHORT).show();
-            gameOverFlag = true;
-        }
+        zombieCreate = false;
+        for (int i = 0; i < currentNumOfZombies; i++)
+            if (zombie[i] != null) zombie[i].downSignal = false;
+        if(gameOverFlag == false) Toast.makeText(context, "GAME OVER", Toast.LENGTH_SHORT).show();
+        gameOverFlag = true;
     }
 
     private void drawLine(Canvas canvas){

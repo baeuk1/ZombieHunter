@@ -15,7 +15,7 @@ import android.view.MotionEvent;
 public class Controller {
     private Paint paint_LR;
     private Paint paint_shot;
-    private Rect shotbutton;
+    private Drawable shotbutton;
     private Drawable left;
     private Drawable right;
     private final int BTTOP = 900;
@@ -33,23 +33,23 @@ public class Controller {
     public Controller(Context context){
         paint_LR = new Paint();
         paint_shot = new Paint();
-        shotbutton = new Rect();
+        shotbutton = ContextCompat.getDrawable(context,R.drawable.shotbutton);
         left = ContextCompat.getDrawable(context,R.drawable.left);
         right = ContextCompat.getDrawable(context,R.drawable.right);
 
-        paint_LR.setColor(Color.RED);
+        paint_LR.setColor(Color.BLUE);
         paint_LR.setTextSize(70);
-        paint_shot.setColor(Color.BLUE);
+        paint_shot.setColor(Color.LTGRAY);
 
         left.setBounds(BTLEFTSTART, BTTOP, BTLEFTEND, BTBOTTOM);
-        shotbutton.set(BTMIDDLESTART, BTTOP, BTMIDDLEEND, BTBOTTOM);
+        shotbutton.setBounds(BTMIDDLESTART, BTTOP, BTMIDDLEEND, BTBOTTOM);
         right.setBounds(BTRIGHTSTART,BTTOP,BTRIGHTEND,BTBOTTOM);
     }
 
     public void draw(Canvas canvas){
         left.draw(canvas);
         right.draw(canvas);
-        canvas.drawRect(shotbutton, paint_shot);
+        shotbutton.draw(canvas);
         canvas.drawText("SHOT", 290, 970, paint_LR);
     }
     public int onTouchEvent(MotionEvent event){
